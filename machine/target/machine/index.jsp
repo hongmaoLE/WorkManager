@@ -72,15 +72,13 @@
     layui.use(['layer', 'upload'], function () {
         var layer = layui.layer
             , upload = layui.upload;
-        //选完文件后不自动上传
         upload.render({
             elem: '#select-file'
             , url: 'Servlet'
             , auto: false
-            //,multiple: true
             , bindAction: '#upfile'
             , accept: 'file'
-            , exts: 'docx|doc'
+            , exts: 'docx|ipynb'
             , drag: 'true'
             , done: function (res) {
                 console.log(res);
@@ -88,43 +86,21 @@
                     layer.msg("文件上传成功");
                 }
                 if (res.code == "error") {
-                    layer.msg("文件格式存在问题，请按要求命名");
+                    layer.msg("文件格式错误，正确格式 应数11601-1604270328-裴常旺-作业2.docx，注意与老师的格式有不同");
                 }
-                if (res.code == "ko") {
-                    layer.msg("文件格式缺少必要信息");
+                if (res.code == "lock") {
+                    layer.msg("文件格式错误，正确格式 应数11601-1604270328-裴常旺-作业2.docx，注意与老师的格式有不同");
                 }
 
             }
             , error: function (index, upload) {
                 layer.msg("文件上传失败，请联系助教QQ1241169737");
-                //layer.closeAll('loading'); //关闭loading
+
             }
         });
     });
 
 
 </script>
-<!-- stats.js -->
-<!--<script src="./js/lib/stats.js"></script>-->
-<!--<script>-->
-<!--var count_particles, stats, update;-->
-<!--stats = new Stats;-->
-<!--stats.setMode(0);-->
-<!--stats.domElement.style.position = 'absolute';-->
-<!--stats.domElement.style.left = '0px';-->
-<!--stats.domElement.style.top = '0px';-->
-<!--document.body.appendChild(stats.domElement);-->
-<!--count_particles = document.querySelector('.js-count-particles');-->
-<!--update = function() {-->
-<!--stats.begin();-->
-<!--stats.end();-->
-<!--if (window.pJSDom[0].pJS.particles && window.pJSDom[0].pJS.particles.array) {-->
-<!--count_particles.innerText = window.pJSDom[0].pJS.particles.array.length;-->
-<!--}-->
-<!--requestAnimationFrame(update);-->
-<!--};-->
-<!--requestAnimationFrame(update);-->
-<!--</script>-->
-
 </body>
 </html>

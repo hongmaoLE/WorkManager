@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * @ProjectName: xzw
@@ -34,9 +33,9 @@ import java.util.regex.Pattern;
 public class Upload extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //String savePath = this.getServletContext().getRealPath("/machine");
+        String savePath = this.getServletContext().getRealPath("/machine");
         //liunx  路径
-        String savePath = File.separator + "root" + File.separator + "doc";
+        //String savePath = File.separator + "root" + File.separator + "doc";
         File parent = new File(savePath);
         if (!parent.mkdir()) {
             parent.mkdir();
@@ -46,6 +45,7 @@ public class Upload extends HttpServlet {
         ServletFileUpload upload = new ServletFileUpload(factory);
         //解决上传文件名的中文乱码
         upload.setHeaderEncoding("UTF-8");
+        //取出文件名和文件
         String fileName = null;
         FileItem oriitem = null;
         try {
@@ -54,8 +54,6 @@ public class Upload extends HttpServlet {
                 if (item.isFormField()) {
                     continue;
                 }
-
-                //System.out.println("打印："+item.getName());
                 fileName = item.getName();
                 oriitem = item;
             }
@@ -63,19 +61,19 @@ public class Upload extends HttpServlet {
             e.printStackTrace();
         }
         String ele[] = fileName.split("-");
-        String rex = "\\d{10}";
+        String rex = "[\\u4e00-\\u9fa5]{2,3}\\d{5}-\\d{10}-[\\u4e00-\\u9fa5]{2,4}-作业\\d{1}";
         Map<String, Object> map = new HashMap<String, Object>();
-        if (ele.length != 4) {
-            map.put("code", "ko");
-            try {
-                ResponseUtil.write(response, new Gson().toJson(map));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return;
-        }
-        System.out.println(Pattern.compile(rex).matcher(ele[1]).matches());
-        if (Pattern.compile(rex).matcher(ele[1]).matches()) {
+//        if (ele.length != 4) {
+//            map.put("code", "lock");
+//            try {
+//                ResponseUtil.write(response, new Gson().toJson(map));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return;
+//        }
+        //System.out.println(Pattern.compile(rex).matcher(ele[1]).matches());
+        if (RexMatcher.getMatcher(rex, fileName) != null) {
             String wordFile = ele[3].substring(0, 3);
             File filePath = new File(savePath + File.separator + wordFile);
             if (!filePath.exists()) {
@@ -102,4 +100,6 @@ public class Upload extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("get");
     }
+
+
 }
